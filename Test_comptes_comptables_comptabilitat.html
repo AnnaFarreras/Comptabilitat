@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test de Gestió Auxiliar de Personal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .fade { transition: all 0.3s ease-in-out; }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex items-center justify-center p-4">
+  <div id="app" class="max-w-xl w-full bg-white shadow-xl rounded-2xl p-6">
+    <h1 class="text-2xl font-bold mb-4 text-center">Test de Gestió Auxiliar de Personal</h1>
+    <div id="quiz-container"></div>
+    <div class="flex justify-between items-center mt-6">
+      <div id="score" class="text-sm text-gray-600">Encerts: 0 / 0</div>
+      <button id="next-btn" class="hidden bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Següent</button>
+    </div>
+  </div>
+
+  <script>
+    const preguntes = [
+{
+  pregunta: 'Quina és la descripció del compte (4750)?',
+  opcions: ['Creditors, efectes comercials a pagar', "Variació d'existències de primeres matèries", 'Efectes comercials descomptats', 'Hisenda pública, creditora per IVA'],
+  correcta: 3
+},
+{
+  pregunta: "A quin codi correspon: 'Un altre immobilitzat material'?",
+  opcions: ['(258)', '(627)', '(219)', '(206)'],
+  correcta: 2
+},
+{
+  pregunta: 'Quina és la descripció del compte (431)?',
+  opcions: ['Altres ingressos financers', 'Clients, efectes comercials a cobrar', 'Efectes comercials impagats', 'Transport'],
+  correcta: 1
+},
+{
+  pregunta: "A quin codi correspon: 'Altres ingressos financers'?",
+  opcions: ['(769)', '(6060)', '(625)', '(300)'],
+  correcta: 0
+},
+{
+  pregunta: "A quin codi correspon: 'Hisenda Pública, deutora per IVA'?",
+  opcions: ['(5208)', '(600)', '(472)', '(4700)'],
+  correcta: 3
+},
+{
+  pregunta: "A quin codi correspon: 'Elements de transport'?",
+  opcions: ['(100)', '(626)', '(218)', '(4311)'],
+  correcta: 2
+},
+{
+  pregunta: 'Quina és la descripció del compte (460)?',
+  opcions: ['Reserva legal', 'Deutes per efectes descomptats', 'Hisenda Pública, IVA repercutit', 'Bestretes de remuneracions'],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (4752)?',
+  opcions: ['Reserva legal', "Primes d'assegurances", 'Amortització acumulada de mobiliari', 'Hisenda pública, creditora per impost sobre societats'],
+  correcta: 3
+},
+{
+  pregunta: "A quin codi correspon: 'Subministraments'?",
+  opcions: ['(212)', '(7090)', '(572)', '(628)'],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (708)?',
+  opcions: ['Instal·lacions tècniques', "Vendes d'envasos i embalatges", 'Efectes comercials descomptats', 'Devolucions de vendes i operacions similars'],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (173)?',
+  opcions: ["Proveïdors d'immobilitzat a llarg termini", 'Altres ingressos financers', "Variació d'existències de mercaderies", 'Deutors, efectes comercials en gestió de cobrament'],
+  correcta: 0
+},
+{
+  pregunta: "A quin codi correspon: 'Resultat de l'exercici'?",
+  opcions: ['(680)', '(129)', '(217)', '(622)'],
+  correcta: 1
+},
+{
+  pregunta: 'Quina és la descripció del compte (6653)?',
+  opcions: ['Maquinària', 'Elements de transport', 'Devolucions de vendes i operacions similars', "Interessos per descompte d'efectes a altres entitats de crèdit"],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (440)?',
+  opcions: ['Arrendaments i cànons', 'Efectes comercials en cartera', 'Reparacions i conservació', 'Deutors'],
+  correcta: 3
+},
+{
+  pregunta: "A quin codi correspon: 'Deutes a llarg termini amb entitats de crèdit'?",
+  opcions: ['(625)', '(170)', '(659)', '(401)'],
+  correcta: 1
+},
+{
+  pregunta: "A quin codi correspon: 'Descomptes sobre vendes per pagament immediat de mercaderies'?",
+  opcions: ['(7060)', '(769)', '(460)', '(669)'],
+  correcta: 0
+},
+{
+  pregunta: "A quin codi correspon: 'Proveïdors d'immobilitzat a curt termini'?",
+  opcions: ['(465)', '(523)', '(476)', '(2819)'],
+  correcta: 1
+},
+{
+  pregunta: "A quin codi correspon: 'Construccions'?",
+  opcions: ['(6623)', '(555)', '(6090)', '(211)'],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (631)?',
+  opcions: ['Clients de dubtós cobrament', 'Amortització acumulada de maquinària', 'Despeses excepcionals', 'Altres tributs'],
+  correcta: 3
+},
+{
+  pregunta: "A quin codi correspon: 'Reparacions i conservació'?",
+  opcions: ['(680)', '(622)', '(218)', '(472)'],
+  correcta: 1
+},
+{
+  pregunta: 'Quina és la descripció del compte (2812)?',
+  opcions: ['Clients', 'Imposicions a llarg termini', "Amortització acumulada d'instal·lacions tècniques", "Amortització de l'immobilitzat intangible"],
+  correcta: 2
+},
+{
+  pregunta: "A quin codi correspon: 'Devolucions de vendes de mercaderies'?",
+  opcions: ['(7080)', '(680)', '(708)', '(173)'],
+  correcta: 0
+},
+{
+  pregunta: "A quin codi correspon: 'Efectes a pagar a llarg termini'?",
+  opcions: ['(175)', '(300)', '(704)', '(216)'],
+  correcta: 0
+},
+{
+  pregunta: "A quin codi correspon: 'Capital social'?",
+  opcions: ['(100)', '(400)', '(129)', '(4412)'],
+  correcta: 0
+},
+{
+  pregunta: 'Quina és la descripció del compte (214)?',
+  opcions: ['Utillatge', 'Altres ingressos financers', 'Altres tributs', "Préstecs a curt termini d'entitats de crèdit"],
+  correcta: 0
+},
+{
+  pregunta: 'Quina és la descripció del compte (465)?',
+  opcions: ['Bestretes de clients', 'Hisenda pública, creditora per impost sobre societats', 'Remuneracions pendents de pagament', 'Amortització acumulada de maquinària'],
+  correcta: 2
+},
+{
+  pregunta: "A quin codi correspon: 'Despeses excepcionals'?",
+  opcions: ['(678)', '(681)', '(625)', '(555)'],
+  correcta: 0
+},
+{
+  pregunta: 'Quina és la descripció del compte (2819)?',
+  opcions: ['Devolucions de vendes i operacions similars', 'Mobles', 'Hisenda Pública, IVA suportat', "Amortització acumulada d'un altre immobilitzat material"],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (216)?',
+  opcions: ["Variació d'existències de mercaderies", 'Mobles', "Amortització acumulada d'un altre immobilitzat material", 'Clients, efectes comercials a cobrar'],
+  correcta: 1
+},
+{
+  pregunta: 'Quina és la descripció del compte (436)?',
+  opcions: ['Deutors, efectes comercials a cobrar', 'Clients de dubtós cobrament', 'Descomptes sobre compres per pagament immediat de mercaderies', 'Bestretes de clients'],
+  correcta: 1
+},
+{
+  pregunta: "A quin codi correspon: 'Variació d'existències de primeres matèries'?",
+  opcions: ['(129)', '(623)', '(2816)', '(611)'],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (472)?',
+  opcions: ['Hisenda Pública, IVA repercutit', 'Efectes comercials en gestió de cobrament', "Préstecs a curt termini d'entitats de crèdit", 'Hisenda Pública, IVA suportat'],
+  correcta: 3
+},
+{
+  pregunta: "A quin codi correspon: 'Mercaderies A'?",
+  opcions: ['(627)', '(300)', '(441)', '(170)'],
+  correcta: 1
+},
+{
+  pregunta: "A quin codi correspon: 'Vendes d'envasos i embalatges'?",
+  opcions: ['(4312)', '(411)', '(572)', '(704)'],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (258)?',
+  opcions: ['Devolucions de vendes i operacions similars', 'Imposicions a llarg termini', "Amortització de l'immobilitzat material", 'Devolucions de vendes de mercaderies'],
+  correcta: 1
+},
+{
+  pregunta: 'Quina és la descripció del compte (4315)?',
+  opcions: ['Proveïdors, efectes comercials a pagar', 'Efectes comercials descomptats', 'Sous i salaris', 'Efectes comercials impagats'],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (206)?',
+  opcions: ['Descomptes sobre compres per pagament immediat de mercaderies', 'Mercaderies A', 'Aplicacions informàtiques', 'Hisenda Pública, IVA repercutit'],
+  correcta: 2
+},
+{
+  pregunta: "A quin codi correspon: 'Reserva legal'?",
+  opcions: ['(4412)', '(217)', '(112)', '(640)'],
+  correcta: 2
+},
+{
+  pregunta: "A quin codi correspon: 'Maquinària'?",
+  opcions: ['(217)', '(630)', '(4412)', '(213)'],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (2816)?',
+  opcions: ["Amortització acumulada d'instal·lacions tècniques", 'Amortització acumulada de mobiliari', 'Elements de transport', 'Arrendaments i cànons'],
+  correcta: 1
+},
+{
+  pregunta: "A quin codi correspon: 'Pèrdues de crèdits comercials incobrables'?",
+  opcions: ['(4410)', '(170)', '(6623)', '(650)'],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (411)?',
+  opcions: ['Creditors, efectes comercials a pagar', 'Clients, efectes comercials a cobrar', 'Interessos de deutes amb entitats de crèdit', 'Efectes comercials descomptats'],
+  correcta: 0
+},
+{
+  pregunta: 'Quina és la descripció del compte (281)?',
+  opcions: ['Bestretes de clients', "Interessos per descompte d'efectes a altres entitats de crèdit", "Amortització acumulada de l'immobilitzat material", "Proveïdors d'immobilitzat a curt termini"],
+  correcta: 2
+},
+{
+  pregunta: "A quin codi correspon: 'Deutors, efectes comercials en gestió de cobrament'?",
+  opcions: ['(411)', '(281)', '(4412)', '(708)'],
+  correcta: 2
+},
+{
+  pregunta: 'Quina és la descripció del compte (477)?',
+  opcions: ['Maquinària', 'Devolucions de vendes i operacions similars', 'Hisenda Pública, IVA repercutit', "Proveïdors d'immobilitzat a curt termini"],
+  correcta: 2
+},
+{
+  pregunta: 'Quina és la descripció del compte (4311)?',
+  opcions: ['Efectes comercials descomptats', 'Bestretes de clients', 'Hisenda pública, creditora per retencions practicades', 'Proveïdors'],
+  correcta: 0
+},
+{
+  pregunta: "A quin codi correspon: 'Clients'?",
+  opcions: ['(219)', '(623)', '(430)', '(669)'],
+  correcta: 2
+},
+{
+  pregunta: 'Quina és la descripció del compte (671)?',
+  opcions: ['Devolucions de vendes de mercaderies', 'Deutors, efectes comercials a cobrar', 'Hisenda pública, creditora per impost sobre societats', "Pèrdues procedents de l'immobilitzat material"],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (680)?',
+  opcions: ["Amortització de l'immobilitzat intangible", 'Serveis bancaris i similars', 'Transport', "Amortització acumulada d'elements de transport"],
+  correcta: 0
+},
+{
+  pregunta: 'Quina és la descripció del compte (600)?',
+  opcions: ['Hisenda pública, creditora per IVA', 'Aplicacions informàtiques', 'Devolucions de vendes i operacions similars', 'Compres de mercaderies'],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (2811)?',
+  opcions: ['Devolucions de compres de mercaderies', 'Clients, efectes comercials a cobrar', 'Amortització acumulada de construccions', "Resultat de l'exercici"],
+  correcta: 2
+},
+{
+  pregunta: "A quin codi correspon: 'Altres despeses financeres'?",
+  opcions: ['(206)', '(2818)', '(669)', '(4311)'],
+  correcta: 2
+},
+{
+  pregunta: 'Quina és la descripció del compte (4410)?',
+  opcions: ['Deutors, efectes comercials en cartera', 'Deutors, efectes comercials en gestió de cobrament', 'Altres despeses financeres', "Proveïdors d'immobilitzat a curt termini"],
+  correcta: 0
+},
+{
+  pregunta: "A quin codi correspon: 'Deutors (euros)'?",
+  opcions: ['(525)', '(438)', '(4400)', '(206)'],
+  correcta: 2
+},
+{
+  pregunta: "A quin codi correspon: 'Bancs i institucions de crèdit c/c vista, euros'?",
+  opcions: ['(214)', '(572)', '(630)', '(436)'],
+  correcta: 1
+},
+{
+  pregunta: 'Quina és la descripció del compte (5201)?',
+  opcions: ['Bestretes de clients', 'Altres tributs', 'Elements de transport', 'Deutes a curt termini per crèdit disposat'],
+  correcta: 3
+},
+{
+  pregunta: "A quin codi correspon: 'Proveïdors'?",
+  opcions: ['(2811)', '(400)', '(6623)', '(218)'],
+  correcta: 1
+},
+{
+  pregunta: "A quin codi correspon: 'Hisenda pública, creditora per retencions practicades'?",
+  opcions: ['(4750)', '(625)', '(411)', '(4751)'],
+  correcta: 3
+},
+{
+  pregunta: "A quin codi correspon: 'Instal·lacions tècniques'?",
+  opcions: ['(212)', '(4752)', '(437)', '(4750)'],
+  correcta: 0
+},
+{
+  pregunta: 'Quina és la descripció del compte (627)?',
+  opcions: ['Ràpels per compres de mercaderies', 'Utillatge', 'Reserva legal', 'Publicitat, propaganda i relacions públiques'],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (6060)?',
+  opcions: ['Vendes de mercaderies', 'Subministraments', 'Descomptes sobre compres per pagament immediat de mercaderies', 'Mercaderies A'],
+  correcta: 2
+},
+{
+  pregunta: "A quin codi correspon: 'Envasos i embalatges a tornar per clients'?",
+  opcions: ['(2812)', '(700)', '(437)', '(631)'],
+  correcta: 2
+},
+{
+  pregunta: 'Quina és la descripció del compte (171)?',
+  opcions: ['Elements de transport', 'Ràpels per compres de mercaderies', 'Deutes a llarg termini', 'Caixa, euros'],
+  correcta: 2
+},
+{
+  pregunta: "A quin codi correspon: 'Serveis bancaris i similars'?",
+  opcions: ['(629)', '(642)', '(708)', '(626)'],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (681)?',
+  opcions: ['Maquinària', "Amortització de l'immobilitzat material", 'Vendes de mercaderies', 'Altres serveis'],
+  correcta: 1
+},
+{
+  pregunta: 'Quina és la descripció del compte (640)?',
+  opcions: ['Remuneracions pendents de pagament', 'Creditors per prestacions de serveis', 'Sous i salaris', 'Deutes a llarg termini amb entitats de crèdit'],
+  correcta: 2
+},
+{
+  pregunta: 'Quina és la descripció del compte (700)?',
+  opcions: ['Vendes de mercaderies', "Seguretat Social a càrrec de l'empresa", 'Hisenda pública, creditora per IVA', 'Descomptes sobre vendes per pagament immediat de mercaderies'],
+  correcta: 0
+},
+{
+  pregunta: 'Quina és la descripció del compte (4312)?',
+  opcions: ['Imposicions a llarg termini', 'Efectes comercials en gestió de cobrament', 'Vendes de mercaderies', 'Impost sobre beneficis'],
+  correcta: 1
+},
+{
+  pregunta: 'Quina és la descripció del compte (7090)?',
+  opcions: ['Interessos de deutes amb entitats de crèdit', 'Bestretes de remuneracions', 'Impost sobre beneficis', 'Ràpels sobre vendes de mercaderies'],
+  correcta: 3
+},
+{
+  pregunta: "A quin codi correspon: 'Amortització acumulada de maquinària'?",
+  opcions: ['(2818)', '(2813)', '(258)', '(628)'],
+  correcta: 1
+},
+{
+  pregunta: 'Quina és la descripció del compte (441)?',
+  opcions: ['Sous i salaris', 'Deutors, efectes comercials a cobrar', 'Bestretes de remuneracions', 'Instal·lacions tècniques'],
+  correcta: 1
+},
+{
+  pregunta: 'Quina és la descripció del compte (610)?',
+  opcions: ['Efectes a pagar a llarg termini', 'Ràpels sobre vendes de mercaderies', "Amortització acumulada d'instal·lacions tècniques", "Variació d'existències de mercaderies"],
+  correcta: 3
+},
+{
+  pregunta: "A quin codi correspon: 'Caixa, euros'?",
+  opcions: ['(310)', '(441)', '(570)', '(4700)'],
+  correcta: 2
+},
+{
+  pregunta: "A quin codi correspon: 'Matèries primeres A'?",
+  opcions: ['(630)', '(700)', '(310)', '(472)'],
+  correcta: 2
+},
+{
+  pregunta: 'Quina és la descripció del compte (438)?',
+  opcions: ['Bestretes de clients', "Variació d'existències de primeres matèries", 'Sous i salaris', "Vendes d'envasos i embalatges"],
+  correcta: 0
+},
+{
+  pregunta: 'Quina és la descripció del compte (5200)?',
+  opcions: ['Sous i salaris', "Préstecs a curt termini d'entitats de crèdit", 'Clients', 'Devolucions de vendes de mercaderies'],
+  correcta: 1
+},
+{
+  pregunta: "A quin codi correspon: 'Organismes de la Seguretat Social, creditors'?",
+  opcions: ['(173)', '(437)', '(476)', '(611)'],
+  correcta: 2
+},
+{
+  pregunta: 'Quina és la descripció del compte (2817)?',
+  opcions: ["Amortització acumulada d'equips per a processos d'informació", 'Pèrdues de crèdits comercials incobrables', 'Efectes comercials en cartera', "Amortització acumulada d'instal·lacions tècniques"],
+  correcta: 0
+},
+{
+  pregunta: "A quin codi correspon: 'Primes d'assegurances'?",
+  opcions: ['(625)', '(6653)', '(441)', '(4310)'],
+  correcta: 0
+},
+{
+  pregunta: 'Quina és la descripció del compte (642)?',
+  opcions: ['Devolucions de compres de mercaderies', 'Capital social', "Variació d'existències de mercaderies", "Seguretat Social a càrrec de l'empresa"],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (659)?',
+  opcions: ['Hisenda pública, creditora per impost sobre societats', 'Hisenda pública, creditora per IVA', 'Mercaderies A', 'Altres pèrdues en gestió corrent'],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (551)?',
+  opcions: ['Descomptes sobre vendes per pagament immediat de mercaderies', 'Remuneracions pendents de pagament', "Primes d'assegurances", 'Compte corrent amb socis i administradors'],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (555)?',
+  opcions: ["Amortització acumulada d'elements de transport", "Pèrdues procedents de l'immobilitzat material", 'Deutors, efectes comercials en gestió de cobrament', "Partides pendents d'aplicació"],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (525)?',
+  opcions: ['Deutors, efectes comercials en cartera', 'Efectes comercials impagats', 'Clients, efectes comercials a cobrar', 'Efectes a pagar a curt termini'],
+  correcta: 3
+},
+{
+  pregunta: "A quin codi correspon: 'Serveis de professionals independents'?",
+  opcions: ['(212)', '(680)', '(623)', '(551)'],
+  correcta: 2
+},
+{
+  pregunta: 'Quina és la descripció del compte (401)?',
+  opcions: ['Efectes comercials descomptats', 'Proveïdors, efectes comercials a pagar', 'Devolucions de compres de mercaderies', 'Matèries primeres A'],
+  correcta: 1
+},
+{
+  pregunta: "A quin codi correspon: 'Altres serveis'?",
+  opcions: ['(629)', '(611)', '(216)', '(650)'],
+  correcta: 0
+},
+{
+  pregunta: "A quin codi correspon: 'Creditors per prestacions de serveis'?",
+  opcions: ['(410)', '(630)', '(6090)', '(4311)'],
+  correcta: 0
+},
+{
+  pregunta: 'Quina és la descripció del compte (621)?',
+  opcions: ['Publicitat, propaganda i relacions públiques', 'Serveis de professionals independents', 'Arrendaments i cànons', 'Hisenda pública, creditora per retencions practicades'],
+  correcta: 2
+},
+{
+  pregunta: 'Quina és la descripció del compte (630)?',
+  opcions: ['Impost sobre beneficis', "Seguretat Social a càrrec de l'empresa", 'Caixa, euros', "Variació d'existències de mercaderies"],
+  correcta: 0
+},
+{
+  pregunta: "A quin codi correspon: 'Amortització acumulada d'elements de transport'?",
+  opcions: ['(2818)', '(430)', '(4750)', '(572)'],
+  correcta: 0
+},
+{
+  pregunta: 'Quina és la descripció del compte (5208)?',
+  opcions: ["Préstecs a curt termini d'entitats de crèdit", 'Deutes per efectes descomptats', "Equips per a processos d'informació", 'Vendes de mercaderies'],
+  correcta: 1
+},
+{
+  pregunta: "A quin codi correspon: 'Efectes comercials en cartera'?",
+  opcions: ['(477)', '(4410)', '(4310)', '(4315)'],
+  correcta: 2
+},
+{
+  pregunta: "A quin codi correspon: 'Equips per a processos d'informació'?",
+  opcions: ['(621)', '(460)', '(217)', '(572)'],
+  correcta: 2
+},
+{
+  pregunta: "A quin codi correspon: 'Devolucions de compres de mercaderies'?",
+  opcions: ['(570)', '(4752)', '(441)', '(6080)'],
+  correcta: 3
+},
+{
+  pregunta: 'Quina és la descripció del compte (6623)?',
+  opcions: ['Bestretes de clients', "Amortització acumulada d'un altre immobilitzat material", 'Interessos de deutes amb entitats de crèdit', 'Construccions'],
+  correcta: 2
+},
+{
+  pregunta: "A quin codi correspon: 'Transport'?",
+  opcions: ['(6623)', '(624)', '(211)', '(680)'],
+  correcta: 1
+},
+{
+  pregunta: "A quin codi correspon: 'Ràpels per compres de mercaderies'?",
+  opcions: ['(769)', '(437)', '(629)', '(6090)'],
+  correcta: 3
+}
+];
+
+let preguntesPendents = [...preguntes];
+    let encerts = 0;
+    let total = 0;
+
+    const quizContainer = document.getElementById("quiz-container");
+    const nextBtn = document.getElementById("next-btn");
+    const score = document.getElementById("score");
+
+    function barrejaArray(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function mostraPregunta() {
+      quizContainer.innerHTML = "";
+      nextBtn.classList.add("hidden");
+
+      if (preguntesPendents.length === 0) {
+        quizContainer.innerHTML = `
+          <div class="text-center">
+            <p class="text-xl font-semibold mb-4">🎉 Has completat el test!</p>
+            <p class="mb-4">Has encertat ${encerts} de ${total} preguntes.</p>
+            <button onclick="reinicia()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Reiniciar</button>
+            <button onclick="window.close()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 ml-2">Sortir</button>
+          </div>
+        `;
+        return;
+      }
+
+      preguntesPendents = barrejaArray(preguntesPendents);
+      actual = preguntesPendents.shift();
+      const respostaCorrecta = actual.opcions[actual.correcta];
+      actual.opcions = barrejaArray([...actual.opcions]);
+      actual.correcta = actual.opcions.indexOf(respostaCorrecta);
+
+      const opcionsHTML = actual.opcions.map((text, i) => `
+        <button onclick="validaResposta(${i})" class="w-full text-left px-4 py-2 mb-2 border rounded bg-gray-100 hover:bg-gray-200 opc">${text}</button>
+      `).join("");
+
+      quizContainer.innerHTML = `
+        <p class="mb-4 font-medium">${actual.pregunta}</p>
+        <div id="opcions">${opcionsHTML}</div>
+        <div id="feedback" class="mt-4 text-center"></div>
+      `;
+    }
+
+    function validaResposta(index) {
+      const botons = document.querySelectorAll(".opc");
+      botons.forEach(btn => btn.disabled = true);
+      total++;
+      if (index === actual.correcta) {
+        botons[index].classList.add("bg-green-300");
+        document.getElementById("feedback").innerHTML = "<p class='text-green-600 font-bold'>😊 Molt bé, has encertat la pregunta!</p>";
+        encerts++;
+      } else {
+        botons[index].classList.add("bg-red-300");
+        botons[actual.correcta].classList.add("bg-green-300");
+        document.getElementById("feedback").innerHTML = "<p class='text-red-600 font-bold'>😢 Ohhh! No és correcte!</p>";
+        preguntesPendents.push(actual);
+      }
+      nextBtn.classList.remove("hidden");
+      score.textContent = `Encerts: ${encerts} / ${total}`;
+    }
+
+    function reinicia() {
+      preguntesPendents = [...preguntes];
+      encerts = 0;
+      total = 0;
+      score.textContent = `Encerts: 0 / 0`;
+      mostraPregunta();
+    }
+
+    nextBtn.addEventListener("click", mostraPregunta);
+    mostraPregunta();
+  </script>
+</body>
+</html>
