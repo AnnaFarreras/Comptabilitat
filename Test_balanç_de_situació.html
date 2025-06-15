@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Balanç de Situació</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen p-4">
+  <div id="app" class="max-w-xl mx-auto bg-white shadow-xl rounded-xl p-6">
+    <h1 class="text-2xl font-bold mb-4 text-center">Test Balanç de Situació</h1>
+<p class="text-center text-gray-600 mb-6">Respon les preguntes per classificar correctament els comptes dins del balanç: actiu, passiu, corrent, disponible, etc.</p>
+
+    <div id="barra-nivells" class="flex gap-2 flex-wrap justify-center mb-4">
+      <button onclick="iniciaNivell(1)" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Nivell 1</button>
+      <button onclick="iniciaNivell(2)" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Nivell 2</button>
+      <button onclick="iniciaNivell(3)" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Nivell 3</button>
+      <button onclick="iniciaNivell(4)" class="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600">Nivell 4</button>
+      <button onclick="iniciaNivell(5)" class="bg-pink-500 text-white px-3 py-1 rounded hover:bg-pink-600">Nivell 5</button>
+    </div>
+
+    <div id="quiz-container" class="mb-4"></div>
+    <div class="flex justify-between items-center mt-6">
+      <div id="score" class="text-sm text-gray-600">Encerts: 0 / 0</div>
+      <button id="next-btn" class="hidden bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Següent</button>
+    </div>
+  </div>
+
+  <script>
+    const nivells = {
+      1: [
+        { pregunta: "(100) Capital social", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(101) Fons social", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(104) Socis per desemborsaments no exigits", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(110) Prima d'emissió d'accions", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(112) Reserva legal", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(113) Reserves voluntàries", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(114) Reserves per accions pròpies", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(118) Resultats d'exercicis anteriors", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(120) Resultat de l'exercici (benefici)", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(121) Resultat de l'exercici (pèrdua)", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(129) Resultat de l'exercici", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(200) Investigació", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(201) Desenvolupament", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(202) Concessions administratives", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(203) Propietat industrial", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(204) Fons de comerç", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(205) Drets de traspàs", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(206) Aplicacions informàtiques", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(210) Terrenys i béns naturals", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(211) Construccions", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(213) Maquinària", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(214) Utillatge", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(215) Altres instal·lacions", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(216) Mobiliari", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(217) Equips per a processos d'informació", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(218) Elements de transport", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(281) Amortització acumulada d'immobilitzat intangible", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(282) Amortització acumulada d'immobilitzat material", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(300) Mercaderies", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(310) Matèries primeres", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(400) Proveïdors", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(410) Creditors per prestacions de serveis", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(430) Clients", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(470) HP, deutora per diversos conceptes", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(4750) HP, creditora per IVA", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(5200) Préstecs a curt termini", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(523) Proveïdors d'immobilitzat a curt termini", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(530) Desemborsaments pendents sobre accions pròpies", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(570) Caixa", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(572) Bancs", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(660) Pèrdues de crèdits comercials", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(211) Construccions", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(300) Mercaderies", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(400) Proveïdors", opcions: ["Actiu", "Passiu"], correcta: 1 },
+        { pregunta: "(430) Clients", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(570) Caixa", opcions: ["Actiu", "Passiu"], correcta: 0 },
+        { pregunta: "(171) Deutes a llarg termini", opcions: ["Actiu", "Passiu"], correcta: 1 }
+      ],
+      2: [
+        { pregunta: "(100) Capital social", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(101) Fons social", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(104) Socis per desemborsaments no exigits", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(110) Prima d'emissió d'accions", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(112) Reserva legal", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(113) Reserves voluntàries", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(114) Reserves per accions pròpies", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(118) Resultats d'exercicis anteriors", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(129) Resultat de l'exercici", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(200) Investigació", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(201) Desenvolupament", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(202) Concessions administratives", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(203) Propietat industrial", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(204) Fons de comerç", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(205) Drets de traspàs", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(206) Aplicacions informàtiques", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(210) Terrenys i béns naturals", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(211) Construccions", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(213) Maquinària", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(214) Utillatge", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(215) Altres instal·lacions", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(216) Mobiliari", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(217) Equips per a processos d'informació", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(218) Elements de transport", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(300) Mercaderies", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(310) Matèries primeres", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(400) Proveïdors", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(410) Creditors per prestacions de serveis", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(430) Clients", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(470) HP, deutora per diversos conceptes", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(4750) HP, creditora per IVA", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(5200) Préstecs a curt termini", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(523) Proveïdors d'immobilitzat a curt termini", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(530) Desemborsaments pendents sobre accions pròpies", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(570) Caixa", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(572) Bancs", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(211) Construccions", opcions: ["Corrent", "No corrent"], correcta: 1 },
+        { pregunta: "(300) Mercaderies", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(430) Clients", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(570) Caixa", opcions: ["Corrent", "No corrent"], correcta: 0 },
+        { pregunta: "(171) Deutes a llarg termini", opcions: ["Corrent", "No corrent"], correcta: 1 }
+      ],
+      3: [
+        { pregunta: "(430) Clients", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(570) Caixa", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 0 },
+        { pregunta: "(572) Bancs", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 0 },
+        { pregunta: "(400) Proveïdors", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 },
+        { pregunta: "(4750) HP, creditora per IVA", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 },
+        { pregunta: "(470) HP, deutora per diversos conceptes", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(5200) Préstecs a curt termini", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 },
+        { pregunta: "(523) Proveïdors d'immobilitzat a curt termini", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 },
+        { pregunta: "(530) Desemborsaments pendents sobre accions pròpies", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(300) Mercaderies", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(310) Matèries primeres", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(440) Deutors diversos", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(431) Clients, efectes comercials a cobrar", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(4310) Clients, pagaments ajornats", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(436) Clients, factures pendents de formalitzar", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(547) Comptes corrents amb socis i administradors", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(5720) Bancs c/c vista", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 0 },
+        { pregunta: "(5721) Bancs c/c crèdit", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 0 },
+        { pregunta: "(573) Caixes d'estalvis", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 0 },
+        { pregunta: "(574) Caixes, efectiu", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 0 },
+        { pregunta: "(4311) Clients, efectes comercials a cobrar", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(520) Deutes amb entitats de crèdit c/t", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 },
+        { pregunta: "(521) Deutes amb entitats de crèdit l/t", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 },
+        { pregunta: "(4751) HP, retencions i ingressos a compte", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 },
+        { pregunta: "(4752) HP, IVA repercutit", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 },
+        { pregunta: "(4756) HP, retencions practicades", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 },
+        { pregunta: "(551) Comptes corrents amb empreses del grup", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(5511) Comptes corrents amb empreses associades", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(556) Deutes amb administradors o socis", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 },
+        { pregunta: "(4300) Clients nacionals", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(4301) Clients estrangers", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(5512) Crèdits a curt termini a empreses associades", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(570) Caixa", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 0 },
+        { pregunta: "(572) Bancs", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 0 },
+        { pregunta: "(400) Proveïdors", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 },
+        { pregunta: "(4750) HP, creditora per IVA", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 },
+        { pregunta: "(470) HP, deutora per diversos conceptes", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(5200) Préstecs a curt termini", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 },
+        { pregunta: "(523) Proveïdors d'immobilitzat a curt termini", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 },
+        { pregunta: "(530) Desemborsaments pendents sobre accions pròpies", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(300) Mercaderies", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(310) Matèries primeres", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 1 },
+        { pregunta: "(570) Caixa", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 0 },
+        { pregunta: "(400) Proveïdors", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 },
+        { pregunta: "(4750) HP, creditora per IVA", opcions: ["Disponible", "Realitzable", "Exigible"], correcta: 2 }
+      ],
+      4: [
+        { pregunta: "(100) Capital social", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 0 },
+        { pregunta: "(104) Socis per desemborsaments no exigits", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 0 },
+        { pregunta: "(110) Prima d'emissió d'accions", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 0 },
+        { pregunta: "(113) Reserves voluntàries", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 0 },
+        { pregunta: "(129) Resultat de l'exercici", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 0 },
+        { pregunta: "(200) Investigació", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 1 },
+        { pregunta: "(203) Propietat industrial", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 1 },
+        { pregunta: "(206) Aplicacions informàtiques", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 1 },
+        { pregunta: "(210) Terrenys i béns naturals", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 1 },
+        { pregunta: "(211) Construccions", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 1 },
+        { pregunta: "(213) Maquinària", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 1 },
+        { pregunta: "(215) Altres instal·lacions", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 1 },
+        { pregunta: "(218) Elements de transport", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 1 },
+        { pregunta: "(281) Amortització acumulada d'immobilitzat intangible", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 1 },
+        { pregunta: "(282) Amortització acumulada d'immobilitzat material", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 1 },
+        { pregunta: "(300) Mercaderies", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 2 },
+        { pregunta: "(310) Matèries primeres", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 2 },
+        { pregunta: "(400) Proveïdors", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 3 },
+        { pregunta: "(410) Creditors per prestacions de serveis", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 3 },
+        { pregunta: "(430) Clients", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 4 },
+        { pregunta: "(470) HP, deutora per diversos conceptes", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 4 },
+        { pregunta: "(4750) HP, creditora per IVA", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 4 },
+        { pregunta: "(5200) Préstecs a curt termini", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 1 },
+        { pregunta: "(523) Proveïdors d'immobilitzat a curt termini", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 1 },
+        { pregunta: "(530) Desemborsaments pendents sobre accions pròpies", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 0 },
+        { pregunta: "(570) Caixa", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 4 },
+        { pregunta: "(572) Bancs", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 4 },
+        { pregunta: "(211) Construccions", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 1 },
+        { pregunta: "(300) Mercaderies", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 2 },
+        { pregunta: "(400) Proveïdors", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 3 },
+        { pregunta: "(570) Caixa", opcions: ["1xx", "2xx", "3xx", "4xx", "5xx"], correcta: 4 }
+      ],
+      5: [
+        { pregunta: "(300) Mercaderies", opcions: ["Existències", "Realitzable", "Disponible"], correcta: 0 },
+        { pregunta: "(310) Matèries primeres", opcions: ["Existències", "Realitzable", "Disponible"], correcta: 0 },
+        { pregunta: "(600) Compres de mercaderies", opcions: ["Existències", "Realitzable", "Disponible"], correcta: 0 },
+        { pregunta: "(430) Clients", opcions: ["Existències", "Realitzable", "Disponible"], correcta: 1 },
+        { pregunta: "(470) HP, deutora per diversos conceptes", opcions: ["Existències", "Realitzable", "Disponible"], correcta: 1 },
+        { pregunta: "(530) Desemborsaments pendents sobre accions pròpies", opcions: ["Existències", "Realitzable", "Disponible"], correcta: 1 },
+        { pregunta: "(570) Caixa", opcions: ["Existències", "Realitzable", "Disponible"], correcta: 2 },
+        { pregunta: "(572) Bancs", opcions: ["Existències", "Realitzable", "Disponible"], correcta: 2 },
+        { pregunta: "(5200) Préstecs a curt termini", opcions: ["Curt termini", "Llarg termini"], correcta: 0 },
+        { pregunta: "(523) Proveïdors d'immobilitzat a curt termini", opcions: ["Curt termini", "Llarg termini"], correcta: 0 },
+        { pregunta: "(4750) HP, creditora per IVA", opcions: ["Curt termini", "Llarg termini"], correcta: 0 },
+        { pregunta: "(400) Proveïdors", opcions: ["Curt termini", "Llarg termini"], correcta: 0 },
+        { pregunta: "(410) Creditors per prestacions de serveis", opcions: ["Curt termini", "Llarg termini"], correcta: 0 },
+        { pregunta: "(171) Deutes a llarg termini", opcions: ["Curt termini", "Llarg termini"], correcta: 1 },
+        { pregunta: "(521) Deutes amb entitats de crèdit l/t", opcions: ["Curt termini", "Llarg termini"], correcta: 1 },
+        { pregunta: "(160) Emprèstits obligacionaris", opcions: ["Curt termini", "Llarg termini"], correcta: 1 },
+        { pregunta: "(163) Altres deutes a llarg termini", opcions: ["Curt termini", "Llarg termini"], correcta: 1 },
+        { pregunta: "(520) Deutes amb entitats de crèdit c/t", opcions: ["Curt termini", "Llarg termini"], correcta: 0 },
+        { pregunta: "(430) Clients", opcions: ["Existències", "Realitzable", "Disponible"], correcta: 1 },
+        { pregunta: "(570) Caixa", opcions: ["Existències", "Realitzable", "Disponible"], correcta: 2 },
+        { pregunta: "(171) Deutes a llarg termini", opcions: ["Curt termini", "Llarg termini"], correcta: 1 },
+        { pregunta: "(5200) Préstecs a curt termini", opcions: ["Curt termini", "Llarg termini"], correcta: 0 }
+      ]
+    };
+
+    let preguntesPendents = [];
+    let encerts = 0;
+    let total = 0;
+    let actual = null;
+    let progressFill;
+
+    const quizContainer = document.getElementById("quiz-container");
+    const nextBtn = document.getElementById("next-btn");
+    const score = document.getElementById("score");
+
+    const progressBar = document.createElement("div");
+    progressBar.className = "w-full bg-gray-300 h-2 rounded overflow-hidden mt-4";
+    progressFill = document.createElement("div");
+    progressFill.className = "h-full bg-blue-500";
+    progressFill.style.width = "0%";
+    progressBar.appendChild(progressFill);
+    quizContainer.before(progressBar);
+
+    function barrejaArray(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function iniciaNivell(n) {
+      preguntesPendents = [...nivells[n]];
+      encerts = 0;
+      total = 0;
+      score.textContent = `Encerts: 0 / 0`;
+      mostraPregunta();
+    }
+
+    function mostraPregunta() {
+      quizContainer.innerHTML = "";
+      nextBtn.classList.add("hidden");
+      updateProgress();
+
+      if (preguntesPendents.length === 0) {
+        quizContainer.innerHTML = `
+          <div class="text-center">
+            <p class="text-xl font-semibold mb-4">🎉 Has completat el nivell!</p>
+            <p class="mb-4">Has encertat ${encerts} de ${total} preguntes.</p>
+          </div>
+        `;
+        return;
+      }
+
+      preguntesPendents = barrejaArray(preguntesPendents);
+      actual = preguntesPendents.shift();
+      const respostaCorrecta = actual.opcions[actual.correcta];
+      actual.opcions = barrejaArray([...actual.opcions]);
+      actual.correcta = actual.opcions.indexOf(respostaCorrecta);
+
+      const opcionsHTML = actual.opcions.map((text, i) => `
+        <button class="w-full text-left px-4 py-2 mb-2 border rounded bg-gray-100 hover:bg-gray-200 opc" data-index="${i}">${text}</button>
+      `).join("");
+
+      quizContainer.innerHTML = `
+        <p class="mb-4 font-medium">El compte <strong>${actual.pregunta}</strong> és...</p>
+        <div id="opcions">${opcionsHTML}</div>
+        <div id="feedback" class="mt-4 text-center"></div>
+      `;
+
+      document.querySelectorAll(".opc").forEach(btn => {
+        btn.addEventListener("click", () => validaResposta(parseInt(btn.dataset.index)));
+      });
+    }
+
+    function validaResposta(index) {
+      const botons = document.querySelectorAll(".opc");
+      botons.forEach(btn => btn.disabled = true);
+      total++;
+      if (index === actual.correcta) {
+        botons[index].classList.add("bg-green-300");
+        document.getElementById("feedback").innerHTML = "<p class='text-green-600 font-bold'>😊 Molt bé!</p>";
+        encerts++;
+      } else {
+        botons[index].classList.add("bg-red-300");
+        botons[actual.correcta].classList.add("bg-green-300");
+        document.getElementById("feedback").innerHTML = "<p class='text-red-600 font-bold'>😢 No és correcte.</p>";
+        preguntesPendents.push(actual);
+      }
+      nextBtn.classList.remove("hidden");
+      score.textContent = `Encerts: ${encerts} / ${total}`;
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const totalPreguntes = encerts + preguntesPendents.length;
+      const percentatge = totalPreguntes > 0 ? (encerts / totalPreguntes) * 100 : 0;
+      if (progressFill) progressFill.style.width = `${percentatge}%`;
+    }
+
+    nextBtn.addEventListener("click", mostraPregunta);
+    window.iniciaNivell = iniciaNivell;
+  </script>
+</body>
+</html>
