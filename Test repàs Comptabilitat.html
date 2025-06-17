@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test repàs de Comptabilitat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen p-4">
+  <div id="app" class="max-w-xl mx-auto bg-white shadow-xl rounded-xl p-6">
+    <h1 class="text-2xl font-bold mb-4 text-center">Test repàs de Comptabilitat</h1>
+    <div id="barra-nivells" class="flex gap-2 flex-wrap justify-center mb-4">
+      <button onclick="iniciaNivell(1)" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Nivell 1</button>
+      <button onclick="iniciaNivell(2)" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Nivell 2</button>
+      <button onclick="iniciaNivell(3)" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Nivell 3</button>
+      <button onclick="iniciaNivell(4)" class="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-700">Nivell 4</button>
+    </div>
+
+    <div id="quiz-container" class="mb-4"></div>
+    <div class="flex justify-between items-center mt-6">
+      <div id="score" class="text-sm text-gray-600">Encerts: 0 / 0</div>
+      <button id="next-btn" class="hidden bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Següent</button>
+    </div>
+  </div>
+
+  <script>
+    const nivells = {
+      1: [
+        {
+          tipus: "test",
+          pregunta: "Quina és la funció principal de la comptabilitat?",
+          opcions: [
+            "Fer publicitat dels productes",
+            "Produir informació financera per prendre decisions",
+            "Registrar horaris del personal",
+            "Fer informes comercials"
+          ],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "Quina diferència hi ha entre deure i haver?",
+          opcions: [
+            "El deure sempre és negatiu",
+            "El deure és a l'esquerra, el haver a la dreta",
+            "El deure és per a ingressos",
+            "No hi ha diferència"
+          ],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin llibre registra les operacions agrupades per comptes?",
+          opcions: ["Llibre Major", "Llibre Diari", "Balanç", "Memòria"],
+          correcta: 0
+        },
+        {
+          tipus: "test",
+          pregunta: "El llibre d'inventaris conté:",
+          opcions: [
+            "Els assentaments del dia",
+            "El detall del balanç i altres informes anuals",
+            "Els cobraments i pagaments",
+            "Els horaris de treball"
+          ],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin compte representa l'IVA suportat?",
+          opcions: ["(472)", "(477)", "(700)", "(570)"],
+          correcta: 0
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin compte representa l'IVA repercutit?",
+          opcions: ["(472)", "(477)", "(400)", "(430)"],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin document s'utilitza per iniciar un assentament?",
+          opcions: ["Extracte bancari", "Contracte laboral", "Factura", "Memòria econòmica"],
+          correcta: 2
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin compte s'utilitza per registrar l'efectiu en caixa?",
+          opcions: ["(570)", "(572)", "(430)", "(400)"],
+          correcta: 0
+        },
+        {
+          tipus: "test",
+          pregunta: "A quin llibre es transcriuen cronològicament tots els assentaments?",
+          opcions: ["Major", "Diari", "Balanç", "Memòria"],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin llibre comptable no és obligatori per a totes les empreses segons el Codi de Comerç espanyol, però sí altament recomanable per a la gestió interna?",
+          opcions: ["Llibre Diari", "Llibre Major", "Llibre d'Inventaris i Comptes Anuals", "Tots són obligatoris"],
+          correcta: 1
+        },
+        {
+          tipus: "completar",
+          frase: "El llibre ___ recull les operacions per ordre cronològic.",
+          opcions: ["Major", "Inventaris", "Diari", "Caixa"],
+          correcta: "Diari"
+        },
+        {
+          tipus: "completar",
+          frase: "Els comptes del grup 6 s'utilitzen per registrar les ___ de l'activitat.",
+          opcions: ["vendes", "reserves", "despeses", "existències"],
+          correcta: "despeses"
+        },
+        {
+          tipus: "completar",
+          frase: "El compte ___ reflecteix les entrades de diners a l'empresa.",
+          opcions: ["(700)", "(572)", "(600)", "(430)"],
+          correcta: "(572)"
+        },
+        {
+          tipus: "completar",
+          frase: "El compte ___ recull les vendes de mercaderies.",
+          opcions: ["(600)", "(430)", "(700)", "(477)"],
+          correcta: "(700)"
+        },
+        {
+          tipus: "relacionar",
+          pregunta: "Relaciona els grups de comptes amb la seva funció:",
+          parelles: [
+            { esquerra: "Grup 1", opcions: ["Ingressos", "Finançament bàsic", "Despeses"], correcta: "Finançament bàsic" },
+            { esquerra: "Grup 6", opcions: ["Ingressos", "Despeses", "Proveïdors"], correcta: "Despeses" },
+            { esquerra: "Grup 7", opcions: ["Clients", "Ingressos", "Despeses"], correcta: "Ingressos" }
+          ]
+        },
+        {
+          tipus: "relacionar",
+          pregunta: "Relaciona cada compte amb el seu tipus:",
+          parelles: [
+            { esquerra: "(430) Clients", opcions: ["Ingressos", "Actiu", "Passiu"], correcta: "Actiu" },
+            { esquerra: "(400) Proveïdors", opcions: ["Despeses", "Passiu", "Actiu"], correcta: "Passiu" },
+            { esquerra: "(700) Venda de mercaderies", opcions: ["Actiu", "Ingressos", "Passiu"], correcta: "Ingressos" }
+          ]
+        },
+        {
+          tipus: "relacionar",
+          pregunta: "Relaciona el llibre amb la seva descripció:",
+          parelles: [
+            { esquerra: "Diari", opcions: ["Resum de saldos", "Operacions cronològiques", "Ingressos i despeses"], correcta: "Operacions cronològiques" },
+            { esquerra: "Major", opcions: ["Ingressos", "Resum de saldos", "Detall per compte"], correcta: "Detall per compte" },
+            { esquerra: "Compte de pèrdues i guanys", opcions: ["Actiu i passiu", "Ingressos i despeses", "Cronologia d’operacions"], correcta: "Ingressos i despeses" }
+          ]
+        },
+        {
+          tipus: "relacionar",
+          pregunta: "Relaciona els comptes amb el seu tipus:",
+          parelles: [
+            { esquerra: "(640) Sous i salaris", opcions: ["Ingressos", "Despesa", "Passiu"], correcta: "Despesa" },
+            { esquerra: "(4751) Hisenda P. retencions", opcions: ["Actiu", "Passiu", "Despesa"], correcta: "Passiu" },
+            { esquerra: "(570) Caixa", opcions: ["Passiu", "Tresoreria", "Resultat"], correcta: "Tresoreria" }
+          ]
+        },
+{
+  tipus: "test",
+  pregunta: "L'objectiu principal de la comptabilitat és:",
+  opcions: [
+    "Registrar totes les operacions de compra i venda",
+    "Produir informació financera per a la presa de decisions",
+    "Calcular els impostos a pagar per l'empresa",
+    "Gestionar el personal de l'empresa"
+  ],
+  correcta: 1
+},
+{
+  tipus: "completar",
+  frase: "El compte (206) 'Aplicacions informàtiques' es classifica com a immobilitzat ___.",
+  opcions: ["material", "financera", "intangible", "corrent"],
+  correcta: "intangible"
+},
+{
+  tipus: "completar",
+  frase: "El capital social és una part del ___ de l'empresa.",
+  opcions: ["passiu corrent", "passiu no corrent", "patrimoni net", "actiu corrent"],
+  correcta: "patrimoni net"
+},
+{
+  tipus: "relacionar",
+  pregunta: "Relaciona el concepte d'IVA amb el seu impacte o compte relacionat:",
+  parelles: [
+    { esquerra: "IVA Suportat", opcions: ["Impost cobrat al client", "Impost pagat en les compres", "Impost a pagar a Hisenda"], correcta: "Impost pagat en les compres" },
+    { esquerra: "IVA Repercutit", opcions: ["Impost pagat al proveïdor", "Impost inclòs en el preu de venda", "Impost a compensar"], correcta: "Impost inclòs en el preu de venda" },
+    { esquerra: "(470) Hisenda Pública, deutora per IVA", opcions: ["Resultat liquidació a pagar", "Resultat liquidació a favor de l'empresa", "IVA cobrat i no declarat"], correcta: "Resultat liquidació a favor de l'empresa" }
+  ]
+}
+      ],
+      2: [
+        {
+          tipus: "test",
+          pregunta: "El balanç de situació mostra l' ___ patrimonial d'una empresa en un moment determinat.",
+          opcions: ["estructura", "evolució", "ingrés", "descompte"],
+          correcta: 0
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin compte representa una despesa financera?",
+          opcions: ["(660)", "(700)", "(572)", "(430)"],
+          correcta: 0
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin compte forma part del passiu exigible?",
+          opcions: ["(430)", "(400)", "(572)", "(700)"],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin compte representa l'efectiu en caixa?",
+          opcions: ["(570)", "(572)", "(430)", "(400)"],
+          correcta: 0
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin compte representa els saldos bancaris disponibles?",
+          opcions: ["(570)", "(572)", "(700)", "(400)"],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "El llibre Major mostra:",
+          opcions: ["El resum cronològic de les operacions", "Els assentaments agrupats per compte", "Els balanços mensuals", "La memòria de gestió"],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "El compte (600) correspon a:",
+          opcions: ["Venda de mercaderies", "Compra de mercaderies", "Client", "Subministraments"],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "El compte (700) correspon a:",
+          opcions: ["Venda de mercaderies", "Compra de mercaderies", "Tresoreria", "Amortització"],
+          correcta: 0
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin llibre inclou el balanç de situació i el compte de pèrdues i guanys?",
+          opcions: ["Llibre Diari", "Llibre Major", "Llibre d'Inventaris i Comptes Anuals", "Memòria"],
+          correcta: 2
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin dels següents NO és un actiu corrent?",
+          opcions: ["(300) Mercaderies", "(430) Clients", "(572) Bancs", "(200) R+D"],
+          correcta: 3
+        },
+        {
+          tipus: "completar",
+          frase: "Els comptes del grup 3 corresponen a ___",
+          opcions: ["actiu no corrent", "existències", "clients", "tresoreria"],
+          correcta: "existències"
+        },
+        {
+          tipus: "completar",
+          frase: "La ___ representa l'obligació de pagar a curt termini.",
+          opcions: ["clientela", "tresoreria", "creditor", "factura"],
+          correcta: "creditor"
+        },
+        {
+          tipus: "completar",
+          frase: "El compte (4751) 'Hisenda Pública, creditora per retencions practicades' registra les retencions d'IRPF que l'empresa ha practicat i ha de pagar a ___.",
+          opcions: ["empleats", "proveïdors", "Hisenda", "Seguretat Social"],
+          correcta: "Hisenda"
+        },
+        {
+          tipus: "completar",
+          frase: "Un compte té un saldo ___ quan la suma de l'Haver és superior a la suma del Deure.",
+          opcions: ["deutor", "null", "final", "creditor"],
+          correcta: "creditor"
+        },
+        {
+          tipus: "relacionar",
+          pregunta: "Relaciona el grup amb el tipus de comptes:",
+          parelles: [
+            { esquerra: "Grup 2", opcions: ["Ingressos", "Immobilitzat", "Tresoreria"], correcta: "Immobilitzat" },
+            { esquerra: "Grup 3", opcions: ["Tresoreria", "Existències", "Passius"], correcta: "Existències" },
+            { esquerra: "Grup 5", opcions: ["Reserves", "Tresoreria", "Ingressos"], correcta: "Tresoreria" }
+          ]
+        },
+        {
+          tipus: "relacionar",
+          pregunta: "Relaciona el concepte amb el compte del Passiu Corrent corresponent:",
+          parelles: [
+            { esquerra: "Deute per la compra de mercaderies a crèdit", opcions: ["(410) Creditors", "(400) Proveïdors", "(520) Préstecs c/t"], correcta: "(400) Proveïdors" },
+            { esquerra: "Quantitat a pagar a Hisenda per IVA de vendes", opcions: ["(472) IVA suportat", "(4750) HP, creditora per IVA", "(630) Impost sobre beneficis"], correcta: "(4750) HP, creditora per IVA" },
+            { esquerra: "Deute amb la Seguretat Social per quotes pendents", opcions: ["(642) Seguretat Social a càrrec de l'empresa", "(476) Organismes de la Seguretat Social, creditors", "(465) Remuneracions de personal pendents"], correcta: "(476) Organismes de la Seguretat Social, creditors" }
+          ]
+        },
+        {
+          tipus: "relacionar",
+          pregunta: "Relaciona els comptes amb la seva classificació:",
+          parelles: [
+            { esquerra: "(600) Compres de mercaderies", opcions: ["Ingrés", "Despesa d'explotació", "Despesa financera"], correcta: "Despesa d'explotació" },
+            { esquerra: "(700) Venda de mercaderies", opcions: ["Ingrés financer", "Ingrés d'explotació", "Despesa d'explotació"], correcta: "Ingrés d'explotació" },
+            { esquerra: "(640) Sous i salaris", opcions: ["Ingrés", "Despesa d'explotació", "Despesa financera"], correcta: "Despesa d'explotació" }
+          ]
+        },
+{
+  tipus: "completar",
+  frase: "El resultat de l'exercici es calcula restant les despeses dels ___.",
+  opcions: ["actius", "passius", "ingressos", "patrimoni net"],
+  correcta: "ingressos"
+},
+{
+  tipus: "completar",
+  frase: "Les devolucions de vendes de mercaderies es registren al compte ___.",
+  opcions: ["(700)", "(708)", "(709)", "(608)"],
+  correcta: "(708)"
+},
+{
+  tipus: "test",
+  pregunta: "El compte (771) 'Beneficis procedents de l'immobilitzat intangible' s'usa en la ___ d'un element d'aquest tipus.",
+  opcions: ["compra", "amortització", "venda", "revalorització"],
+  correcta: 2
+},
+{
+  tipus: "test",
+  pregunta: "El compte (681) Amortització de l’immobilitzat, és de naturalesa:",
+  opcions: ["Ingressos", "Despesa", "Passiu", "Actiu"],
+  correcta: 1
+},
+{
+  tipus: "relacionar",
+  pregunta: "Relaciona el servei o despesa amb el seu compte del Grup 6:",
+  parelles: [
+    { esquerra: "Factura d'electricitat o aigua", opcions: ["(621)", "(628)", "(626)"], correcta: "(628)" },
+    { esquerra: "Pagament a un assessor fiscal extern", opcions: ["(627)", "(623)", "(629)"], correcta: "(623)" },
+    { esquerra: "Assegurança del local comercial", opcions: ["(625)", "(624)", "(622)"], correcta: "(625)" }
+  ]
+},
+{
+  tipus: "relacionar",
+  pregunta: "Relaciona cada document amb el seu ús habitual:",
+  parelles: [
+    { esquerra: "Factura", opcions: ["Justificant d'una operació", "Control de saldos", "Resum comptable"], correcta: "Justificant d'una operació" },
+    { esquerra: "Balanç", opcions: ["Resum comptable", "Llistat d'empleats", "Document fiscal"], correcta: "Resum comptable" },
+    { esquerra: "Extracte bancari", opcions: ["Control de saldos", "Comprovant fiscal", "Amortització"], correcta: "Control de saldos" }
+  ]
+}
+      ],
+      3: [
+        {
+          tipus: "test",
+          pregunta: "Quin és el període d'amortització màxim en anys per a 'Edificis industrials' segons la taula fiscal?",
+          opcions: ["50 anys", "68 anys", "100 anys", "30 anys"],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "El compte (650) 'Pèrdues de crèdits comercials incobrables' s'utilitza quan:",
+          opcions: [
+            "Un client paga amb retard",
+            "Un client declara fallida i no pagarà el seu deute",
+            "L'empresa no pot pagar un deute",
+            "Es concedeix un descompte a un client"
+          ],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin compte correspon a una despesa de personal?",
+          opcions: ["(623)", "(640)", "(628)", "(631)"],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin compte representa les devolucions de vendes?",
+          opcions: ["(700)", "(708)", "(709)", "(608)"],
+          correcta: 1
+        },
+{
+    tipus: "test",
+    pregunta: "El compte (523) 'Inversions financeres a curt termini en instruments de patrimoni' s'utilitza per a:",
+    opcions: [
+      "Accions d'altres empreses amb intenció de mantenir-les menys d'un any",
+      "Deutes a llarg termini amb tercers",
+      "Crèdits concedits a personal",
+      "Immobilitzat material per a ús de l'empresa"
+    ],
+    correcta: 0
+  },
+        {
+          tipus: "test",
+          pregunta: "El compte (200) 'Despeses de recerca i desenvolupament' es classifica com a:",
+          opcions: ["Immobilitzat material", "Immobilitzat financer", "Immobilitzat intangible", "Actiu corrent"],
+          correcta: 2
+        },
+        {
+          tipus: "test",
+          pregunta: "Quants dígits sol tenir un compte comptable del Pla General Comptable (PGC) en la seva màxima expressió de detall?",
+          opcions: ["3 dígits", "5 dígits", "7 dígits", "9 dígits"],
+          correcta: 2
+        },
+        {
+          tipus: "test",
+          pregunta: "Una 'Variació d'existències de mercaderies' negativa normalment significa que:",
+          opcions: [
+            "L'empresa ha comprat més mercaderies de les que ha venut",
+            "L'empresa ha venut més mercaderies de les que ha comprat",
+            "Les mercaderies s'han revaloritzat",
+            "No hi ha hagut moviment de mercaderies"
+          ],
+          correcta: 1
+        },
+        {
+          tipus: "completar",
+          frase: "L'amortització és la pèrdua de valor que experimenta un actiu immobilitzat per ___ o ús.",
+          opcions: ["venda", "inflació", "antiguitat", "caducitat"],
+          correcta: "antiguitat"
+        },
+        {
+	tipus: "completar",
+          frase: "L'amortització de l'immobilitzat intangible s'acumula al compte (___).",
+          opcions: ["280", "281", "680", "681"],
+          correcta: "280"
+        },
+        {
+          tipus: "completar",
+          frase: "Les imposicions a llarg termini realitzades per l'empresa es registren al compte (___).",
+          opcions: ["540", "572", "258", "170"],
+          correcta: "258"
+        },
+        {
+          tipus: "relacionar",
+          pregunta: "Relaciona l'element amb el seu període màxim d'amortització segons la taula fiscal:",
+          parelles: [
+            { esquerra: "Mobiliari", opcions: ["18 anys", "10 anys", "20 anys"], correcta: "20 anys" },
+            { esquerra: "Autocamions", opcions: ["20 anys", "14 anys", "10 anys"], correcta: "10 anys" },
+            { esquerra: "Cables (instal·lacions)", opcions: ["40 anys", "20 anys", "30 anys"], correcta: "30 anys" }
+          ]
+        },
+        {
+          tipus: "relacionar",
+          pregunta: "Relaciona el compte amb el seu grup principal dins del compte de Pèrdues i Guanys:",
+          parelles: [
+            { esquerra: "(600) Compres de mercaderies", opcions: ["Despesa financera", "Ingrés", "Despesa d'explotació"], correcta: "Despesa d'explotació" },
+            { esquerra: "(700) Venda de mercaderies", opcions: ["Despesa d'explotació", "Ingrés financer", "Ingrés d'explotació"], correcta: "Ingrés d'explotació" },
+            { esquerra: "(640) Sous i salaris", opcions: ["Ingrés", "Despesa financera", "Despesa d'explotació"], correcta: "Despesa d'explotació" }
+          ]
+        },
+        {
+          tipus: "relacionar",
+          pregunta: "Relaciona el servei o despesa amb el seu compte del Grup 6:",
+          parelles: [
+            { esquerra: "Factura d'electricitat o aigua", opcions: ["(626) Serveis bancaris", "(621) Arrendaments", "(628) Subministraments"], correcta: "(628) Subministraments" },
+            { esquerra: "Pagament a un assessor fiscal extern", opcions: ["(627) Publicitat", "(629) Altres serveis", "(623) Serveis de professionals independents"], correcta: "(623) Serveis de professionals independents" },
+            { esquerra: "Assegurança del local comercial", opcions: ["(624) Transport", "(622) Reparacions", "(625) Primes d'assegurances"], correcta: "(625) Primes d'assegurances" }
+          ]
+        },
+{
+  tipus: "test",
+  pregunta: "Quin d'aquests comptes representa un deute financer a curt termini?",
+  opcions: ["(171)", "(400)", "(520)", "(475)"],
+  correcta: 2
+},
+{
+  tipus: "test",
+  pregunta: "Quin compte s'utilitza per registrar els deutes amb personal (salaris pendents de pagament)?",
+  opcions: ["(460)", "(465)", "(476)", "(430)"],
+  correcta: 1
+},
+{
+  tipus: "test", // Canviem a tipus "test" per a una pregunta més directa sobre el compte
+  pregunta: "El compte (4312) 'Efectes comercials en gestió de cobrament' s'utilitza per a:",
+  opcions: [
+    "Factures de clients que encara no han vençut",
+    "Lletres de canvi o pagarés de clients que s'han enviat al banc per a la seva gestió de cobrament però encara no s'han cobrat",
+    "Crèdits de dubtós cobrament amb clients",
+    "Descomptes de vendes per pagament ràpid"
+  ],
+  correcta: 1 // La segona opció és la correcta
+},
+{
+  tipus: "completar",
+  frase: "Les ___ són aquells materials que, per transformació o combinació, passen a formar part dels productes fabricats.",
+  opcions: ["mercaderies", "productes acabats", "matèries primeres", "residus"],
+  correcta: "matèries primeres"
+},
+{
+  tipus: "relacionar",
+  pregunta: "Relaciona cada tipus d'existència amb el seu estat en el procés productiu:",
+  parelles: [
+    { esquerra: "(330) Productes en curs", opcions: ["Ja venuts", "En procés de fabricació", "Llests per a la venda"], correcta: "En procés de fabricació" },
+    { esquerra: "(300) Mercaderies", opcions: ["Destinats a la venda sense transformació", "Components per a la fabricació", "Elements sense valor comercial"], correcta: "Destinats a la venda sense transformació" },
+    { esquerra: "(360) Subproductes", opcions: ["Productes principals", "Resultats secundaris i accessoris de la fabricació", "Residus reciclables sense valor"], correcta: "Resultats secundaris i accessoris de la fabricació" }
+  ]
+},
+{
+  tipus: "relacionar",
+  pregunta: "Classifica aquests comptes de l'Actiu Corrent segons la seva disponibilitat:",
+  parelles: [
+    { esquerra: "(430) Clients", opcions: ["Disponible", "Realitzable", "Existències"], correcta: "Realitzable" },
+    { esquerra: "(572) Bancs c/c vista", opcions: ["Existències", "Disponible", "Realitzable"], correcta: "Disponible" },
+    { esquerra: "(4700) HP, deutora per diversos conceptes", opcions: ["Existències", "Disponible", "Realitzable"], correcta: "Realitzable" }
+  ]
+}
+      ],
+      4: [
+        {
+          tipus: "test",
+          pregunta: "Quina de les següents afirmacions sobre el 'Patrimoni Net' és correcta?",
+          opcions: [
+            "Representa el total de deutes de l'empresa",
+            "És la part de l'Actiu finançada pels propietaris i beneficis no distribuïts",
+            "Inclou tots els béns i drets de l'empresa",
+            "Són les obligacions a curt termini amb proveïdors"
+          ],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "Quan l'IVA suportat és superior a l'IVA repercutit, el resultat de la liquidació d'IVA és normalment a:",
+          opcions: [
+            "Pagar a Hisenda",
+            "Compensar en futures liquidacions",
+            "Rebre de Hisenda",
+            "Zero, es cancel·la"
+          ],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "Una 'reserva legal' es forma amb part dels beneficis i té un caràcter:",
+          opcions: [
+            "Disponible i exigible",
+            "Obligatori i indisponible",
+            "Voluntari i disponible",
+            "Deute a curt termini"
+          ],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin document comptable serveix per verificar que la suma dels saldos deutors és igual a la dels creditors?",
+          opcions: [
+            "Balanç de Situació",
+            "Compte de Pèrdues i Guanys",
+            "Balanç de Sumes i Saldos",
+            "Estat de Fluxos d'Efectiu"
+          ],
+          correcta: 2
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin és l'objectiu principal de l'Estat de Fluxos d'Efectiu?",
+          opcions: [
+            "Mostrar els ingressos i despeses",
+            "Informar sobre els moviments de caixa i equivalents",
+            "Presentar els actius i passius",
+            "Calcular la rendibilitat financera"
+          ],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "Quin mètode comptable empra la partida doble?",
+          opcions: [
+            "Unigràfica",
+            "Digràfica",
+            "Analítica",
+            "Fiscocontable"
+          ],
+          correcta: 1
+        },
+        {
+          tipus: "test",
+          pregunta: "Què significa que un compte està saldat?",
+          opcions: [
+            "Que només té saldo deutor",
+            "Que només té saldo creditor",
+            "Que el seu deure i haver estan igualats",
+            "Que està tancat per falta d'ús"
+          ],
+          correcta: 2
+        },
+        {
+          tipus: "test",
+          pregunta: "En comptabilitat, què representa la situació D > H?",
+          opcions: [
+            "Saldo creditor",
+            "Saldo negatiu",
+            "Saldo deutor",
+            "Compte tancat"
+          ],
+          correcta: 2
+        },
+{
+  tipus: "test",
+  pregunta: "Quin llibre inclou el balanç de situació i el compte de pèrdues i guanys?",
+  opcions: [
+    "Llibre Diari",
+    "Llibre Major",
+    "Llibre d'Inventaris i Comptes Anuals",
+    "Memòria"
+  ],
+  correcta: 2
+},
+ {
+    tipus: "test",
+    pregunta: "El compte (173) 'Proveïdors d'immobilitzat a llarg termini' registra:",
+    opcions: [
+      "Els deutes amb proveïdors per compra de mercaderies a llarg termini",
+      "Els deutes amb tercers per la compra d'actius fixos amb venciment superior a un any",
+      "Els crèdits concedits a clients a llarg termini",
+      "Els deutes amb entitats de crèdit a llarg termini"
+    ],
+    correcta: 1
+  },
+{
+  tipus: "completar",
+  frase: "El tipus general d'IVA a Espanya aplicat a la majoria de béns i serveis és del ___%.",
+  opcions: ["4", "10", "21", "18"],
+  correcta: "21"
+},
+{
+  tipus: "completar",
+  frase: "El compte (440) 'Deutors diversos' representa els drets de cobrament per operacions no ___.",
+  opcions: ["financers", "comercials", "bancàries", "impositives"],
+  correcta: "comercials"
+},
+{
+  tipus: "relacionar",
+  pregunta: "Relaciona el concepte amb el compte del Finançament Bàsic corresponent:",
+  parelles: [
+    {
+      esquerra: "Benefici o pèrdua de l'exercici actual",
+      opcions: ["(100)", "(112)", "(129)"],
+      correcta: "(129)"
+    },
+    {
+      esquerra: "Aportacions dels socis a l'empresa",
+      opcions: ["(112)", "(100)", "(171)"],
+      correcta: "(100)"
+    },
+    {
+      esquerra: "Deutes financers amb venciment superior a un any",
+      opcions: ["(171)", "(520)", "(400)"],
+      correcta: "(171)"
+    }
+  ]
+},
+{
+  tipus: "relacionar",
+  pregunta: "Relaciona l'estat financer amb el seu objectiu principal:",
+  parelles: [
+    {
+      esquerra: "Estat de Fluxos d'Efectiu",
+      opcions: [
+        "Mostrar els ingressos i despeses",
+        "Informar sobre els moviments de caixa i equivalents",
+        "Presentar els actius i passius"
+      ],
+      correcta: "Informar sobre els moviments de caixa i equivalents"
+    },
+    {
+      esquerra: "Procés comptable",
+      opcions: [
+        "Obtenir un resum del Balanç",
+        "Seqüència d'activitats des de l'assentament fins als estats financers",
+        "Valorar els actius immobilitzats"
+      ],
+      correcta: "Seqüència d'activitats des de l'assentament fins als estats financers"
+    }
+  ]
+},
+        {
+          tipus: "completar",
+          frase: "El conjunt d'elements que constitueixen l'estructura econòmica de l'empresa es coneix com a ___.",
+          opcions: ["passiu", "finançament", "actiu", "balanç"],
+          correcta: "actiu"
+        },
+        {
+          tipus: "completar",
+          frase: "L'___ de Canvis en el Patrimoni Net mostra les variacions produïdes en els fons propis de l'empresa durant l'exercici.",
+          opcions: ["Informe", "Estat", "Resum", "Quadre"],
+          correcta: "Estat"
+        },
+        {
+          tipus: "completar",
+          frase: "El cicle comptable s'inicia amb el registre de les transaccions en el llibre ___.",
+          opcions: ["Major", "Inventaris", "Diari", "Balanç"],
+          correcta: "Diari"
+        },
+        {
+          tipus: "completar",
+          frase: "Les imposicions a curt termini de l'empresa en bancs es registren al compte (___).",
+          opcions: ["570", "572", "540", "550"],
+          correcta: "540"
+        },
+        {
+          tipus: "relacionar",
+          pregunta: "Relaciona l'apartat del Balanç de Situació amb la seva naturalesa:",
+          parelles: [
+            {
+              esquerra: "Actiu No Corrent",
+              opcions: [
+                "Obligacions a curt termini",
+                "Béns i drets que romanen més d'un any",
+                "Finançament aportat pels socis"
+              ],
+              correcta: "Béns i drets que romanen més d'un any"
+            },
+            {
+              esquerra: "Passiu Corrent",
+              opcions: [
+                "Deutes amb venciment inferior a un any",
+                "Obligacions amb venciment superior a un any",
+                "Finançament propi"
+              ],
+              correcta: "Deutes amb venciment inferior a un any"
+            },
+            {
+              esquerra: "Patrimoni Net",
+              opcions: [
+                "Obligacions amb bancs a llarg termini",
+                "Finançament aportat per propietaris i reserves",
+                "Béns i drets a curt termini"
+              ],
+              correcta: "Finançament aportat per propietaris i reserves"
+            }
+          ]
+        },
+        {
+          tipus: "relacionar",
+          pregunta: "Relaciona el tipus d'immobilitzat intangible amb la seva definició:",
+          parelles: [
+            {
+              esquerra: "(201) Concessions administratives",
+              opcions: [
+                "Dret d'explotar un servei públic",
+                "Programa informàtic d'ús intern",
+                "Dret sobre una marca registrada"
+              ],
+              correcta: "Dret d'explotar un servei públic"
+            },
+            {
+              esquerra: "(203) Propietat industrial",
+              opcions: [
+                "Drets d'explotació de mines",
+                "Drets sobre patentes i marques",
+                "Dretes d'autor de llibres"
+              ],
+              correcta: "Drets sobre patentes i marques"
+            },
+            {
+              esquerra: "(206) Aplicacions informàtiques",
+              opcions: [
+                "Maquinari d'ordinadors",
+                "Llicències de programari i desenvolupament",
+                "Equips de comunicació"
+              ],
+              correcta: "Llicències de programari i desenvolupament"
+            }
+          ]
+        },
+        {
+          tipus: "relacionar",
+          pregunta: "Relaciona cada llibre comptable obligatori amb la informació que proporciona:",
+          parelles: [
+            {
+              esquerra: "Llibre Diari",
+              opcions: [
+                "Resum detallat per compte",
+                "Informació d'existències al final de l'any",
+                "Registre cronològic de totes les operacions"
+              ],
+              correcta: "Registre cronològic de totes les operacions"
+            },
+            {
+              esquerra: "Llibre d'Inventaris i Comptes Anuals",
+              opcions: [
+                "Moviments de caixa i bancs",
+                "Transaccions del dia a dia",
+                "Balanç de situació i compte de pèrdues i guanys"
+              ],
+              correcta: "Balanç de situació i compte de pèrdues i guanys"
+            },
+            {
+              esquerra: "Llibre Major (ús intern)",
+              opcions: [
+                "Moviments agregats per compte",
+                "Assentaments d'ajustament de tancament",
+                "Resum diari de vendes"
+              ],
+              correcta: "Moviments agregats per compte"
+            }
+          ]
+        }
+      ]
+    };
+
+    let preguntesPendents = [];
+    let encerts = 0;
+    let preguntesRespostes = 0; // Preguntes contestades (correctes + incorrectes)
+    let totalPreguntesNivell = 0; // Total de preguntes en el nivell actual
+
+    let quizContainer;
+    let nextBtn;
+    let score;
+    let progressBar;
+    let progressFill;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      quizContainer = document.getElementById("quiz-container");
+      nextBtn = document.getElementById("next-btn");
+      score = document.getElementById("score");
+
+      progressBar = document.createElement("div");
+      progressBar.className = "w-full bg-gray-300 h-2 rounded overflow-hidden mt-4";
+      progressFill = document.createElement("div");
+      progressFill.className = "h-full bg-blue-500";
+      progressFill.style.width = "0%";
+      progressBar.appendChild(progressFill);
+      quizContainer.before(progressBar); // Add progress bar before quiz container
+
+      nextBtn.addEventListener("click", mostraPregunta);
+    });
+
+    // Funció per barrejar un array (Fisher-Yates shuffle)
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function iniciaNivell(n) {
+      if (!Array.isArray(nivells[n])) {
+        alert("Aquest nivell no està disponible o no conté preguntes.");
+        return;
+      }
+      // Crea una còpia del nivell i la barreja
+      preguntesPendents = [...nivells[n]];
+      shuffleArray(preguntesPendents); // BARREJA LES PREGUNTES AQUÍ
+
+      totalPreguntesNivell = preguntesPendents.length;
+      encerts = 0;
+      preguntesRespostes = 0;
+      score.textContent = `Encerts: ${encerts} / ${preguntesRespostes}`; // Actualitza per mostrar 0/0 inicialment
+      updateProgress(); // Actualitza la barra de progrés a 0%
+      mostraPregunta();
+    }
+
+    function mostraPregunta() {
+      quizContainer.innerHTML = "";
+      nextBtn.classList.add("hidden");
+      
+      if (preguntesPendents.length === 0) {
+        quizContainer.innerHTML = `
+          <div class="text-center">
+            <p class="text-xl font-semibold mb-4">🎉 Has completat el nivell!</p>
+            <p class="mb-4">Has encertat ${encerts} de ${totalPreguntesNivell} preguntes.</p>
+          </div>`;
+        return;
+      }
+
+      const actual = preguntesPendents.shift(); // Defineix 'actual' dins d'aquesta funció per ser més consistent
+      quizContainer.dataset.currentQuestionType = actual.tipus; // Guarda el tipus de pregunta
+
+      if (actual.tipus === "test") {
+        const opcionsHTML = actual.opcions.map((text, i) => `
+          <button onclick="validaResposta(${i}, this)" class="w-full text-left px-4 py-2 mb-2 border rounded bg-gray-100 hover:bg-gray-200 opc">${text}</button>
+        `).join("");
+        quizContainer.innerHTML = `<p class="mb-4 font-medium">${actual.pregunta}</p><div id="opcions-container">${opcionsHTML}</div><div id="feedback" class="mt-4 text-center"></div>`;
+      } else if (actual.tipus === "completar") {
+        const selectHTML = `<select id="select-frase" class="mx-1 border rounded px-2 py-1">
+          <option value="">-- Selecciona --</option> ${actual.opcions.map(o => `<option>${o}</option>`).join("")}
+        </select>`;
+        const fraseAmbSelect = actual.frase.replace("___", selectHTML);
+        quizContainer.innerHTML = `<p class="mb-4">${fraseAmbSelect}</p>
+          <button id="comprovar-btn" onclick="validaCompletar()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-2">Comprovar</button>
+          <div id="feedback" class="mt-4 text-center"></div>`;
+      } else if (actual.tipus === "relacionar") {
+        let html = `<p class="mb-4">${actual.pregunta}</p><div class="space-y-4" id="relacionar-container">`;
+        actual.parelles.forEach((p, i) => {
+          html += `<div>${p.esquerra}: <select data-index="${i}" class="border rounded px-2 py-1">
+            <option value="">-- Selecciona --</option> ${p.opcions.map(o => `<option>${o}</option>`).join("")}</select></div>`;
+        });
+        html += `</div><button id="comprovar-btn" onclick="validaRelacionar()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Comprovar</button><div id="feedback" class="mt-4 text-center"></div>`;
+        quizContainer.innerHTML = html;
+      }
+      // Emmagatzemem la pregunta actual per a la validació posterior
+      quizContainer.currentQuestion = actual; 
+    }
+
+    // Funció per bloquejar la interacció amb les opcions de la pregunta actual
+    function bloquejaInteraccio() {
+        const tipus = quizContainer.dataset.currentQuestionType;
+        if (tipus === "test") {
+            const botons = quizContainer.querySelectorAll(".opc");
+            botons.forEach(btn => btn.disabled = true);
+        } else if (tipus === "completar") {
+            document.getElementById("select-frase").disabled = true;
+            document.getElementById("comprovar-btn").disabled = true;
+        } else if (tipus === "relacionar") {
+            const selects = quizContainer.querySelectorAll("#relacionar-container select");
+            selects.forEach(s => s.disabled = true);
+            document.getElementById("comprovar-btn").disabled = true;
+        }
+    }
+
+    function validaResposta(index, clickedButton) {
+      // Si ja s'ha contestat, ignora el clic
+      if (nextBtn.classList.contains("hidden") === false) { // Si el botó 'next' ja és visible, vol dir que ja s'ha respost
+        return;
+      }
+
+      const feedback = document.getElementById("feedback");
+      const actual = quizContainer.currentQuestion; // Recupera la pregunta actual
+
+      // Incrementa el comptador de preguntes respostes quan es contesta per primera vegada
+      preguntesRespostes++; 
+
+      if (index === actual.correcta) {
+        encerts++;
+        feedback.innerHTML = "<p class='text-green-600 font-bold'>😊 Correcte!</p>";
+        clickedButton.classList.remove("bg-gray-100");
+        clickedButton.classList.add("bg-green-200", "border-green-500");
+      } else {
+        feedback.innerHTML = "<p class='text-red-600 font-bold'>😢 Incorrecte!</p>";
+        clickedButton.classList.remove("bg-gray-100");
+        clickedButton.classList.add("bg-red-200", "border-red-500");
+
+        // Opcional: Ressaltar la resposta correcta
+        const opcions = quizContainer.querySelectorAll(".opc");
+        opcions[actual.correcta].classList.add("bg-green-200", "border-green-500");
+      }
+      score.textContent = `Encerts: ${encerts} / ${preguntesRespostes}`; // MOSTRA ENCERTS / PREGUNTES FETES
+      updateProgress();
+      nextBtn.classList.remove("hidden"); // Mostra el botó "Següent"
+      bloquejaInteraccio(); // Bloqueja les opcions
+    }
+
+    function validaCompletar() {
+      // Si ja s'ha contestat, ignora el clic
+      if (nextBtn.classList.contains("hidden") === false) {
+        return;
+      }
+      
+      const select = document.getElementById("select-frase");
+      const valor = select.value;
+      const feedback = document.getElementById("feedback");
+      const actual = quizContainer.currentQuestion; // Recupera la pregunta actual
+
+      // Incrementa el comptador de preguntes respostes
+      preguntesRespostes++;
+
+      if (valor === actual.correcta) {
+        encerts++;
+        feedback.innerHTML = "<p class='text-green-600 font-bold'>😊 Correcte!</p>";
+        select.classList.add("bg-green-200", "border-green-500");
+      } else {
+        feedback.innerHTML = "<p class='text-red-600 font-bold'>😢 Incorrecte!</p>";
+        select.classList.add("bg-red-200", "border-red-500");
+        // Opcional: Mostrar la resposta correcta
+        feedback.innerHTML += `<p class="text-sm text-gray-700 mt-1">La resposta correcta era: <strong>${actual.correcta}</strong></p>`;
+      }
+      score.textContent = `Encerts: ${encerts} / ${preguntesRespostes}`; // MOSTRA ENCERTS / PREGUNTES FETES
+      updateProgress();
+      nextBtn.classList.remove("hidden"); // Mostra el botó "Següent"
+      bloquejaInteraccio(); // Bloqueja les opcions
+    }
+
+    function validaRelacionar() {
+      // Si ja s'ha contestat, ignora el clic
+      if (nextBtn.classList.contains("hidden") === false) {
+        return;
+      }
+
+      const selects = quizContainer.querySelectorAll("select[data-index]");
+      let correctes = 0;
+      const feedback = document.getElementById("feedback");
+      const actual = quizContainer.currentQuestion; // Recupera la pregunta actual
+
+      // Incrementa el comptador de preguntes respostes
+      preguntesRespostes++;
+
+      selects.forEach((s, i) => {
+        if (s.value === actual.parelles[i].correcta) {
+            correctes++;
+            s.classList.add("bg-green-200", "border-green-500");
+        } else {
+            s.classList.add("bg-red-200", "border-red-500");
+        }
+      });
+      
+      if (correctes === actual.parelles.length) {
+        encerts++;
+        feedback.innerHTML = "<p class='text-green-600 font-bold'>😊 Molt bé!</p>";
+      } else {
+        feedback.innerHTML = "<p class='text-red-600 font-bold'>❌ Revisa les respostes.</p>";
+        // Opcional: Mostrar les respostes correctes
+        let respostesCorrectesHtml = "<p class='text-sm text-gray-700 mt-1'>Respostes correctes:</p><ul>";
+        actual.parelles.forEach((p) => {
+            respostesCorrectesHtml += `<li>${p.esquerra}: <strong>${p.correcta}</strong></li>`;
+        });
+        respostesCorrectesHtml += "</ul>";
+        feedback.innerHTML += respostesCorrectesHtml;
+      }
+      score.textContent = `Encerts: ${encerts} / ${preguntesRespostes}`; // MOSTRA ENCERTS / PREGUNTES FETES
+      updateProgress();
+      nextBtn.classList.remove("hidden"); // Mostra el botó "Següent"
+      bloquejaInteraccio(); // Bloqueja les opcions
+    }
+
+    function updateProgress() {
+      // El percentatge es calcula en base a les preguntes que ja s'han respost (preguntesRespostes)
+      // respecte al total de preguntes del nivell (totalPreguntesNivell).
+      const percentatge = totalPreguntesNivell > 0 ? (preguntesRespostes / totalPreguntesNivell) * 100 : 0;
+      progressFill.style.width = `${percentatge}%`;
+    }
+  </script>
+</body>
+</html>
