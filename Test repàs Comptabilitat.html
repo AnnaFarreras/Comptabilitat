@@ -1021,5 +1021,16 @@
       progressFill.style.width = `${percentatge}%`;
     }
   </script>
+	<script>
+  // Si aquest fitxer s'està carregant dins un iframe...
+  if (window !== window.parent) {
+    window.addEventListener('load', () => {
+      const height = document.documentElement.scrollHeight;
+      // Enviem un missatge al parent (landing page)
+      parent.postMessage({ type: 'resize-iframe', height }, '*');
+    });
+  }
+</script>
+
 </body>
 </html>
